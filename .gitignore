@@ -17,7 +17,7 @@ data
 # Terraform Configuration Values
 #config
 
-secrets.*
+*secrets.*
 
 *.auto.*
 

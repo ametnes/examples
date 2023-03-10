@@ -1,7 +1,9 @@
 provider "google" {
   project = var.project
   region  = var.region
-  credentials = var.credentials
+}
+
+data "google_compute_zones" "available" {
 }
 
 resource "tls_private_key" "key" {
@@ -17,7 +19,7 @@ resource "local_file" "file" {
 module vm {
     source = "../modules/gcp"
     # project = var.project
-    zone = "${var.region}-a"
+    zone = data.google_compute_zones.available.names[0]
     user_data = templatefile("${path.module}/../promtail.sh", {
         region = var.region
         cloud = "gcp"

@@ -1,9 +1,7 @@
-data "google_compute_zones" "available" {
-}
 resource "google_compute_instance" "vm_instance" {
     name         = "gcptutorials-vm"
     machine_type = "f1-micro"
-    zone = data.google_compute_zones.available.names[0]
+    zone = var.zone
   
     boot_disk {
       initialize_params {
