@@ -51,6 +51,36 @@ scrape_configs:
           region: ${region}
           cloud: ${cloud}
           __path__: /var/log/*log
+ 
+  - job_name: health
+    pipeline_stages:
+    - multiline:
+        firstline: '^\w{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2}'
+        max_wait_time: 3s
+    - regex:
+        expression: '^(?P<timestamp>\w{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2})\s(?P<address>[\w\-]+)\s(?P<unit>[\w\-]+)\[\d+\]:\s\[(?P<level>\w+)\]\s(?P<message>(?s:.*))$'
+    - timestamp:
+        source: timestamp
+        format: Mar  7 17:59:06
+    - labels:
+        address:
+        unit:
+        message:
+    - limit:
+        rate: 1
+        burst: 1
+        drop: true
+    - match:
+        selector: '{level="INFO"}'
+        action: keep
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: varlogs
+          region: ${region}
+          cloud: ${cloud}
+          __path__: /var/log/health.log
 
 EOF
 
@@ -74,10 +104,19 @@ WantedBy=multi-user.target
 EOF
 
 
-service promtail start
-service promtail status
+cat > /etc/systemd/system/health.service <<EOF
+[Unit]
+Description=Health Service
 
-usermod -a -G adm promtail
+[Service]
+ExecStart=/bin/systemd-cat --priority=info --stderr-priority=warning --identifier=health /bin/bash -c "while true; do echo '[INFO] health log'; sleep 5; done"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+service health start
+service health status
 
 service promtail start
 service promtail status

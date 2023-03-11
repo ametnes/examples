@@ -11,7 +11,7 @@ module "ec2_usw2" {
     providers = {
         aws = aws.usw2
     }
-    source = "../modules/aws"
+    source = "../modules/aws_ec2"
     instance_count = 4
     public_key = tls_private_key.key.public_key_openssh
     user_data     = templatefile("${path.module}/../promtail.sh", {
@@ -27,7 +27,7 @@ module "ec2_use1" {
     providers = {
         aws = aws.use1
     }
-    source = "../modules/aws"
+    source = "../modules/aws_ec2"
     instance_count = 4
     public_key = tls_private_key.key.public_key_openssh
     user_data     = templatefile("${path.module}/../promtail.sh", {

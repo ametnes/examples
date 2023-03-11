@@ -15,10 +15,8 @@ resource "local_file" "file" {
   filename = "tf-key-pair"
 }
 
-
 module vm {
     source = "../modules/gcp"
-    # project = var.project
     zone = data.google_compute_zones.available.names[0]
     user_data = templatefile("${path.module}/../promtail.sh", {
         region = var.region

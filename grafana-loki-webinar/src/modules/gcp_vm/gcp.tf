@@ -1,5 +1,5 @@
 resource "google_compute_instance" "vm_instance" {
-    name         = "gcptutorials-vm"
+    name         = "vm_instance"
     machine_type = "f1-micro"
     zone = var.zone
   
