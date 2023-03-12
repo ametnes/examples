@@ -7,15 +7,15 @@ resource "local_file" "file" {
   filename = "tf-key-pair"
 }
 
-module "ec2_usw2" {
+module "ec2_aps2" {
     providers = {
-        aws = aws.usw2
+        aws = aws.aps2
     }
     source = "../modules/aws_ec2"
     instance_count = 4
     public_key = tls_private_key.key.public_key_openssh
     user_data     = templatefile("${path.module}/../promtail.sh", {
-        region = "us-west-2"
+        region = "ap-southeast-2"
         cloud = "aws"
         loki_endpoint = var.loki_endpoint
     })
@@ -23,15 +23,15 @@ module "ec2_usw2" {
 }
 
 
-module "ec2_use1" {
+module "ec2_aps1" {
     providers = {
-        aws = aws.use1
+        aws = aws.aps1
     }
     source = "../modules/aws_ec2"
     instance_count = 4
     public_key = tls_private_key.key.public_key_openssh
     user_data     = templatefile("${path.module}/../promtail.sh", {
-        region = "us-east-1"
+        region = "ap-south-1"
         cloud = "aws"
         loki_endpoint = var.loki_endpoint
     })
@@ -39,5 +39,5 @@ module "ec2_use1" {
 }
 
 output "public_ip" {
-  value = concat(module.ec2_use1.public_ips, module.ec2_usw2.public_ips)
+  value = concat(module.ec2_aps1.public_ips, module.ec2_aps2.public_ips)
 }

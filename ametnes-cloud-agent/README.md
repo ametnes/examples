@@ -7,13 +7,16 @@
     export KUBECONFIG=~/.kube/ametnes-data-location-1-24
     eksctl create cluster -f eks-1-24.yml
     ```
-3. Install the Ametnes Cloud Agent
+3. Add the helm repository
     ```
     helm repo add ametnes https://ametnes.github.io/helm && helm repo update
+    ```
+4. Install the Ametnes Cloud Agent
+    ```
     helm upgrade --install --create-namespace --namespace ametnes-system --set agent.config.location=8ea8b9823 ametnes-cloud-agent ametnes/cloud-agent
     ```
-4. Create a network access resource
-5. Create services attached to the network access resource
+5. Create a network access resource
+6. Create services attached to the network access resource
 
 
 ## Cleaning up resources
