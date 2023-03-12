@@ -1,8 +1,8 @@
 #!/bin/bash
 
 cd /usr/local/bin
+apt-get update && apt-get install -y unzip acl curl
 curl -O -L "https://github.com/grafana/loki/releases/download/v2.4.1/promtail-linux-amd64.zip"
-apt-get update && apt-get install -y unzip acl
 unzip "promtail-linux-amd64.zip" && rm "promtail-linux-amd64.zip"
 chmod a+x "promtail-linux-amd64"
 
@@ -28,7 +28,7 @@ scrape_configs:
     relabel_configs:
       - source_labels: ["__journal__systemd_unit"]
         target_label: "unit"
- 
+
   - job_name: system
     pipeline_stages:
     - multiline:
@@ -44,43 +44,13 @@ scrape_configs:
         unit:
         message:
     static_configs:
-      - targets:
-          - localhost
-        labels:
-          job: varlogs
-          region: ${region}
-          cloud: ${cloud}
-          __path__: /var/log/*log
- 
-  - job_name: health
-    pipeline_stages:
-    - multiline:
-        firstline: '^\w{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2}'
-        max_wait_time: 3s
-    - regex:
-        expression: '^(?P<timestamp>\w{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2})\s(?P<address>[\w\-]+)\s(?P<unit>[\w\-]+)\[\d+\]:\s\[(?P<level>\w+)\]\s(?P<message>(?s:.*))$'
-    - timestamp:
-        source: timestamp
-        format: Mar  7 17:59:06
-    - labels:
-        address:
-        unit:
-        message:
-    - limit:
-        rate: 1
-        burst: 1
-        drop: true
-    - match:
-        selector: '{level="INFO"}'
-        action: keep
-    static_configs:
-      - targets:
-          - localhost
-        labels:
-          job: varlogs
-          region: ${region}
-          cloud: ${cloud}
-          __path__: /var/log/health.log
+    - targets:
+        - localhost
+      labels:
+        job: system
+        region: ${region}
+        cloud: ${cloud}
+        __path__: /var/log/*log
 
 EOF
 
