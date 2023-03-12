@@ -1,5 +1,6 @@
 # Setting up an Ametnes Data Services Location
 
+## Creating resources
 1. In your Ametnes Cloud account, create a Service Location and note the Location Id e.g. `8ea8b9823`
 2. Create an EKS kubernetes cluster.
     ```
@@ -13,3 +14,12 @@
     ```
 4. Create a network access resource
 5. Create services attached to the network access resource
+
+
+## Cleaning up resources
+1. Delete the services you created in 5. above
+2. Delete the network resource created in 4. above
+3. Delete the EKS cluster with 
+    ```
+    eksctl delete cluster -f eks-1-24.yml --disable-nodegroup-eviction
+    ```
