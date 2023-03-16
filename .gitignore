@@ -24,3 +24,5 @@ data
 *key-pair
 
 .terraform*
+
+node_modules

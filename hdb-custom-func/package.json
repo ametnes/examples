@@ -1,0 +1,17 @@
+{
+  "name": "hdb-cf-template",
+  "version": "2.0.0",
+  "description": "An example HarperDB Custom Function",
+  "author": "jaxon@harperdb.io",
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "react-scripts": "^5.0.1",
+    "sinon": "^15.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "build:prod": "GENERATE_SOURCEMAP=false react-scripts build",
+    "test:api": "mocha --recursive --timeout 5000 --reporter spec \"services/**/*spec.js\" --reporter spec \"routes/**/*spec.js\""
+  }
+}
