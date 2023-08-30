@@ -1,0 +1,52 @@
+# Create an eks cluster with functional gp3 storage class
+# Create cluster with eksctl create cluster -f eks-1-24.yml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: &cluster_name ametnes-data-location-1-24
+  region: us-west-1
+  version: "1.24"
+
+addons:
+  - name: aws-ebs-csi-driver
+
+iam:
+  withOIDC: true
+
+availabilityZones:
+- us-west-1b
+- us-west-1c
+
+managedNodeGroups:
+- name: *cluster_name
+  amiFamily: AmazonLinux2
+  desiredCapacity: 3
+  disableIMDSv1: false
+  disablePodIMDS: false
+  iam:
+    withAddonPolicies:
+      autoScaler: false
+      awsLoadBalancerController: false
+      ebs: true
+      efs: false
+  instanceTypes:
+  - c6a.4xlarge
+  - c5a.4xlarge
+  labels:
+    alpha.eksctl.io/cluster-name: *cluster_name
+    alpha.eksctl.io/nodegroup-name: *cluster_name
+  maxSize: 5
+  minSize: 3
+
+  spot: true
+  ssh:
+    allow: false
+    publicKeyPath: ""
+  tags:
+    alpha.eksctl.io/nodegroup-name: *cluster_name
+    alpha.eksctl.io/nodegroup-type: managed
+  volumeType: gp3
+
+cloudWatch:
+  clusterLogging: {}
